@@ -70,15 +70,16 @@ const Register = () => {
             <StyledLogo> Chat App </StyledLogo>
             <StyledTitle> Register </StyledTitle >
             <StyledForm onSubmit={ handleSubmit }>
-                <StyledInput type="text" placeholder='display name'/>
-                <StyledInput type="email" placeholder='email'/>
-                <StyledInput type="password" placeholder='password'/>
-                <StyledInput style={{display: "none"}} type="file" id="file"/>
-                <StyledLabel htmlFor='file'>
+                <StyledInput required type="text" placeholder='display name'/>
+                <StyledInput required type="email" placeholder='email'/>
+                <StyledInput required type="password" placeholder='password'/>
+                <StyledInput required style={{display: "none"}} type="file" id="file"/>
+                <StyledLabel required htmlFor='file'>
                   <StyledImage src={Add} />
                   <span> Add an avatar</span>
                 </StyledLabel>
-                <StyledButton> Sign Up</StyledButton>
+                <StyledButton disabled= {loading}> Sign Up</StyledButton>
+                {loading && "Uploading and compressing the image please wait..."}
                 {err && <span> Something went wrong </span>}
             </StyledForm>
             <StyledP> Already have an account? <Link to="/login"> Login </Link></StyledP>

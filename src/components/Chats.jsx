@@ -1,14 +1,18 @@
-import { doc, onSnapshot } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react'
+
 import styled from 'styled-components'
+
+import { doc, onSnapshot } from 'firebase/firestore';
 import { AuthContext } from '../context/AuthContext';
+import { ChatContext } from '../context/ChatContext';
 import { db } from '../firebase';
 
 const Chats = () => {
 
   const [chats, setChats] = useState([]);
 
-  const { currentUser } = useContext(AuthContext)
+  const { currentUser } = useContext(AuthContext);
+  const { dispatch } = useContext(ChatContext);
 
   useEffect(() => {
     const getChats = () => {
@@ -19,24 +23,25 @@ const Chats = () => {
       return () => {
         unsub();
       };
-
     };
 
     currentUser.uid && getChats();
-
   }, [currentUser.uid]);
 
-  console.log(Object.entries(chats))
-
+  const handleSelect = (u) => {
+    dispatch({ type: "CHANGE_USER", payload: u });
+  };
 
   return (
     <Container>
-      {Object.entries(chats)?.map(chat => (
-        <UserChat key={ chat[0]}>
+      {Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat) => (
+        <UserChat key={ chat[0]} 
+                  onClick={() => handleSelect(chat[1].userInfo)}
+        >
           <UserImage src={chat[1].userInfo.photoURL} />
           <UserInfo>
             <StyledSpan> {chat[1].userInfo.displayName} </StyledSpan>
-            <StyledP> {chat[1].userInfo.lastMessage?.text} </StyledP>
+            <StyledP> {chat[1].lastMessage?.text} </StyledP>
           </UserInfo>
         </UserChat>
       ))}

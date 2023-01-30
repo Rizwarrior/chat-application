@@ -1,16 +1,33 @@
-import React from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import { AuthContext } from '../context/AuthContext'
+import { ChatContext } from '../context/ChatContext';
 
-const Message = () => {
+const Message = ( { message } ) => {
+
+  const { currentUser }= useContext(AuthContext);
+  const { data }= useContext(ChatContext);  
+
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
+
   return (
-    <Container className='owner'>
+    <Container  ref={ref} 
+                className={`message ${message.senderId === currentUser.uid && "owner"}`}
+    >
         <MessageInfo>
-            <UserImage src={"https://images.pexels.com/photos/12461870/pexels-photo-12461870.jpeg?auto=compress&cs=tinysrgb&w=300&lazy=load"} />
+            <UserImage src={ message.senderId === currentUser.uid
+                             ? currentUser.photoURL
+                             : data.user.photoURL
+            }/>
             <span> just now</span>
         </MessageInfo>
-        <MessageContent className='owner'>
-            <StyledP> Hello </StyledP>
-            <SentImage src={"https://images.pexels.com/photos/12461870/pexels-photo-12461870.jpeg?auto=compress&cs=tinysrgb&w=300&lazy=load"} /> 
+        <MessageContent>
+            <StyledP> {message.text} </StyledP>
+            {message.img && <SentImage src={message.img} alt="" />}
         </MessageContent>
     </Container>
   )
@@ -24,13 +41,14 @@ const Container= styled.div`
     margin-bottom: 20px;
     &.owner{
         flex-direction: row-reverse;
-    }
-    p{
+        p{
         background-color: #8da4f1;
         color: white;
         border-radius: 10px 0px 10px 10px;
         max-width: max-content;
     }
+    }
+    
 `
 
 const MessageInfo= styled.div`

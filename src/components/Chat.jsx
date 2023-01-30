@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 
 import Cam from "../img/cam.png"
@@ -7,11 +7,16 @@ import More from "../img/more.png"
 import Messages from './Messages'
 import Input from "./Input"
 
+import { ChatContext } from '../context/ChatContext'
+
 const Chat = () => {
+
+  const { data } = useContext(ChatContext);
+
   return (
     <StyledChat>
       <ChatInfo>
-        <span> Jane </span>
+        <span> {data.user.displayName} </span>
         <ChatIcons>
           <StyledImage src={Cam} />
           <StyledImage src={Add} />
